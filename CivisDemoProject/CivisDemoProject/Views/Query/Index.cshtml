@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "CTA Ridership: Queries";
+}
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="~/Home/Index">CTA Ridership Demo</a>
+	</div>
+	<div class="navbar-collapse collapse">
+		<ul class="nav navbar-nav">
+			<li><a href="~/Home/Index">Dataset</a></li>
+			<li><a href="~/BusStop/Index">Bus Stop Table</a></li>
+			<li><a href="~/StopRoute/Index">Stop Route Table</a></li>
+			<li><a href="~/Visualize/Index">Visualizations</a></li>
+			<li class="active"><a href="~/Query/Index">Queries</a></li>
+		</ul>
+	</div>
+</div>
+
+<div id="header-wrapper">
+	<h2>SQL Query Results</h2>
+</div>
+
+<div id="wrapper1">
+	<div id="resultsTable">
+		<label>Query: <select id="comboBox">
+			<option value="longestRoute">Longest Route</option>
+			<option value="commStops">Most common stops</option>
+			<option value="boardings">Most average daily boardings</option>
+			<option value="alightings">Most average daily alightings</option>
+			<option value="net">Net boardings</option>
+		</select>
+		<script>
+			var longestRouteData = [];
+			longestRouteData.getData = function () {
+				$('table').remove();
+				$.getJSON('/Query/LongestRouteQuery', function (longestRouteData) {
+					generateTable(longestRouteData);
+				});
+			};
+
+			var commonStopsData = {};
+			commonStopsData.getData = function () {
+				$('table').remove();
+				$.getJSON('/Query/MostCommonStopsQuery', function (commonStopsData) {
+					generateTable(commonStopsData);
+				});
+			};
+
+			var mostBoardedData = {};
+			mostBoardedData.getData = function () {
+				$('table').remove();
+				$.getJSON('/Query/MostBoardedStopsQuery', function (mostBoardedData) {
+					generateTable(mostBoardedData);
+				});
+			};
+
+			var mostAlightedData = {};
+			mostAlightedData.getData = function () {
+				$('table').remove();
+				$.getJSON('/Query/MostAlightedStopsQuery', function (mostAlightedData) {
+					generateTable(mostAlightedData);
+				});
+			};
+
+			var netData = {};
+			netData.getData = function () {
+				$('table').remove();
+				$.getJSON('/Query/NetBoardingsQuery', function (netData) {
+					generateTable(netData);
+				});
+			};
+
+			// Automatically generate table of any size.
+			// First row is assumed to contain header strings.
+			var generateTable = function (data) {
+				var table = document.createElement('table');
+				$.each(data, function (i, row) {
+					var tr = document.createElement('tr');
+					$.each(row, function (j, cell) {
+						if (i == 0)
+							$('<th></th>').text(cell).appendTo(tr);
+						else
+							$('<td></td>').text(cell).appendTo(tr);
+					});
+					table.appendChild(tr);
+				});
+				document.body.appendChild(table);
+			};
+
+			$("#comboBox").change(function () {
+				var val = $("#comboBox").val();
+				if (val == "longestRoute")
+					longestRouteData.getData();
+				else if (val == "commStops")
+					commonStopsData.getData();
+				else if (val == "boardings")
+					mostBoardedData.getData();
+				else if (val == "alightings")
+					mostAlightedData.getData();
+				else if (val == "net")
+					netData.getData();
+			});
+
+			$(document).ready(function () {
+				longestRouteData.getData();
+			});
+		</script>
+	</div>
+</div>

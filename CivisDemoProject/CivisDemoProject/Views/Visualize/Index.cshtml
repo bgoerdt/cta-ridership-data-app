@@ -1,0 +1,156 @@
+﻿@{
+	ViewBag.Title = "CTA Ridership: Visualizations";
+}
+
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="~/Home/Index">CTA Ridership Demo</a>
+	</div>
+	<div class="navbar-collapse collapse">
+		<ul class="nav navbar-nav">
+			<li><a href="~/Home/Index">Dataset</a></li>
+			<li><a href="~/BusStop/Index">Bus Stop Table</a></li>
+			<li><a href="~/StopRoute/Index">Stop Route Table</a></li>
+			<li class="active"><a href="~/Visualize/Index">Visualizations</a></li>
+			<li><a href="~/Query/Index">Queries</a></li>
+		</ul>
+	</div>
+</div>
+
+<div id="header-wrapper">
+	<h1>Map Visualization</h1>
+</div>
+<div id="wrapper1">
+	<label>Color by: <select id="comboBox">
+		<option value="none">None</option>
+		<option value="commStops">Most common stops</option>
+		<option value="boardings">Most avg. boardings</option>
+		<option value="alightings">Most avg. alightings</option>
+		<option value="net">Net boardings</option>
+	</select>
+	</label>
+	<div id="map">
+		<script>
+			var markers = [];
+			// using Leafletjs to show map
+			var map = L.map('map').setView([41.87523, -87.62493], 10);
+			//CloudMade tile layer (w/ my api license): 'http://{s}.tile.cloudmade.com/70d54da157e443798ac4ea0e990e8e8d/997/256/{z}/{x}/{y}.png'
+			//OpenStreetMap tile layer: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				maxZoom: 18,
+				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'//, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+			}).addTo(map);
+
+			var data = {};
+			data.getData = function () {
+				clearMarkers();
+				$.getJSON('/Visualize/AllStopsQuery', function (data) {
+					$.each(data, function (i, item) {
+						// skip header
+						if (i == 0)
+							return;
+						var marker = L.circleMarker([item[1], item[2]], { radius: 7, stroke: 0.4, fillOpacity: 0.3, weight: 3 });
+						marker.bindPopup("<b>" + item[3] + " and " + item[4] + "</b><br>Avg Weekday Boardings: " + item[5] + "<br>Avg Weekday Alightings: " + item[6]);
+						map.addLayer(marker);
+						markers.push(marker);
+					});
+				});
+			};
+
+			var commonStopsData = {};
+			commonStopsData.getData = function () {
+				clearMarkers();
+				$.getJSON('/Visualize/MostCommonStopsQuery', function (commonStopsData) {
+					$.each(commonStopsData, function (i, item) {
+						// skip header
+						if (i == 0)
+							return;
+						var marker = L.circleMarker([item[1], item[2]], { radius: 7, stroke: 0.4, fillOpacity: 0.3, weight: 3, color: item[8]});
+						marker.bindPopup("<b>" + item[3] + " and " + item[4] + "</b><br>Routes: "+ item[7] + "<br>Avg Weekday Boardings: " + item[5] + "<br>Avg Weekday Alightings: " + item[6]);
+						map.addLayer(marker);
+						marker.bringToBack();
+						markers.push(marker);
+					});
+				});
+			};
+
+			var mostBoardedData = {};
+			mostBoardedData.getData = function () {
+				clearMarkers();
+				$.getJSON('/Visualize/MostBoardedStopsQuery', function (mostBoardedData) {
+					$.each(mostBoardedData, function (i, item) {
+						// skip header
+						if (i == 0)
+							return;
+						var marker = L.circleMarker([item[1], item[2]], { radius: 7, stroke: 0.4, fillOpacity: 0.3, weight: 2, color: item[7] });
+						marker.bindPopup("<b>" + item[3] + " and " + item[4] + "</b><br>Avg Weekday Boardings: " + item[5] + "<br>Avg Weekday Alightings: " + item[6]);
+						map.addLayer(marker);
+						marker.bringToBack();
+						markers.push(marker);
+					});
+				});
+			};
+
+			var mostAlightedData = {};
+			mostAlightedData.getData = function () {
+				clearMarkers();
+				$.getJSON('/Visualize/MostAlightedStopsQuery', function (mostAlightedData) {
+					$.each(mostAlightedData, function (i, item) {
+						// skip header
+						if (i == 0)
+							return;
+						var marker = L.circleMarker([item[1], item[2]], { radius: 7, stroke: 0.4, fillOpacity: 0.3, weight: 2, color: item[7] });
+						marker.bindPopup("<b>" + item[3] + " and " + item[4] + "</b><br>Avg Weekday Boardings: " + item[5] + "<br>Avg Weekday Alightings: " + item[6]);
+						map.addLayer(marker);
+						marker.bringToBack();
+						markers.push(marker);
+					});
+				});
+			};
+
+			var netData = {};
+			netData.getData = function () {
+				clearMarkers();
+				$.getJSON('/Visualize/NetBoardingsQuery', function (netData) {
+					$.each(netData, function (i, item) {
+						// skip header
+						if (i == 0)
+							return;
+						var marker = L.circleMarker([item[1], item[2]], { radius: 7, stroke: 0.4, fillOpacity: 0.3, weight: 2, color: item[8] });
+						marker.bindPopup("<b>" + item[3] + " and " + item[4] + "</b><br>Avg Weekday Boardings: " + item[5] + "<br>Avg Weekday Alightings: " + item[6] + "<br>NET: " + item[7]);
+						map.addLayer(marker);
+						marker.bringToBack();
+						markers.push(marker);
+					});
+				});
+			};
+
+			$("#comboBox").change(function () {
+				var val = $("#comboBox").val();
+				if (val == "none")
+					data.getData();
+				else if (val == "commStops")
+					commonStopsData.getData();
+				else if (val == "boardings")
+					mostBoardedData.getData();
+				else if (val == "alightings")
+					mostAlightedData.getData();
+				else if (val == "net")
+					netData.getData();
+			});
+
+			$(document).ready(function () {
+				data.getData();
+			});
+
+			var clearMarkers = function () {
+				$.each(markers, function (i, marker) {
+					map.removeLayer(markers[i]);
+				});
+			}
+		</script>
+	</div>
+</div>

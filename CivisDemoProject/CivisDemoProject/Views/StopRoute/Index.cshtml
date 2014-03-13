@@ -1,0 +1,49 @@
+﻿@model IEnumerable<CivisDemoProject.Models.StopRoute>
+
+@{
+    ViewBag.Title = "CTA Ridership: Stop Routes";
+}
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="~/Home/Index">CTA Ridership Demo</a>
+	</div>
+	<div class="navbar-collapse collapse">
+		<ul class="nav navbar-nav">
+			<li><a href="~/Home/Index">Dataset</a></li>
+			<li><a href="~/BusStop/Index">Bus Stop Table</a></li>
+			<li class="active"><a href="~/StopRoute/Index">Stop Route Table</a></li>
+			<li><a href="~/Visualize/Index">Visualizations</a></li>
+			<li><a href="~/Query/Index">Queries</a></li>
+		</ul>
+	</div>
+</div>
+
+<div id="header-wrapper">
+	<h2>Stop Routes</h2>
+</div>
+
+<div id="wrapper1">
+	<table>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.stop_id)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.route)
+			</th>
+		</tr>
+
+	@foreach (var item in Model) {
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.stop_id)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.route)
+			</td>
+		</tr>
+	}
+
+	</table>
+</div>

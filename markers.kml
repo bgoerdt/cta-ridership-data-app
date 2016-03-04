@@ -7,11 +7,4 @@
       <coordinates>41.5708232,-93.6539187,0</coordinates>
     </Point>
   </Placemark>
-  <Placemark>
-    <name>My marker 2</name>
-    <description>This is marker 2.</description>
-    <Point>
-      <coordinates>41.5675835,-93.6739512,0</coordinates>
-    </Point>
-  </Placemark>
 </kml>

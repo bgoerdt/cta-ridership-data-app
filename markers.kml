@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Placemark>
+    <name>My marker 1</name>
+    <description>This is marker 1.</description>
+    <Point>
+      <coordinates>41.5708232,-93.6539187,0</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>My marker 2</name>
+    <description>This is marker 2.</description>
+    <Point>
+      <coordinates>41.5675835,-93.6739512,0</coordinates>
+    </Point>
+  </Placemark>
+</kml>
